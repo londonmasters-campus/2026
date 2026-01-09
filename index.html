@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>London Masters Campus - Student Verification</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --dark-blue: #001f3f;
+            --dark-red: #8b0000;
+            --light-gray: #f4f4f4;
+            --white: #ffffff;
+            --success-green: #28a745;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark-blue);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: var(--white);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            margin: 20px;
+        }
+
+        .banner {
+            background: var(--light-gray);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .banner img {
+            height: 50px;
+        }
+
+        .banner h1 {
+            font-size: 22px;
+            margin: 0;
+            animation: colorChange 3s infinite;
+        }
+
+        @keyframes colorChange {
+            0%, 100% { color: var(--dark-blue); }
+            50% { color: var(--dark-red); }
+        }
+
+        .form-content {
+            padding: 30px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .error-text {
+            color: red;
+            font-size: 12px;
+            margin-top: -15px;
+            margin-bottom: 15px;
+            display: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #verifyBtn {
+            background-color: #ff0000;
+            color: white;
+        }
+
+        #submitBtn {
+            background-color: var(--dark-blue);
+            color: white;
+            display: none;
+        }
+
+        .disabled-field {
+            background-color: #e9ecef !important;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        #additionalFields {
+            display: none;
+            border-top: 1px solid #eee;
+            padding-top: 20px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="mainForm">
+    <div class="banner">
+        <img src="assets/logoo.png" alt="Logo">
+        <h1>London Masters Campus</h1>
+    </div>
+
+    <div class="form-content">
+        <div id="step1">
+            <label>Course Name</label>
+            <select id="course">
+                <option value="MDRT">MDRT programm</option>
+                <option value="Bathiya">Bathiya's programm</option>
+            </select>
+
+            <label>Mobile Number(කරුණාකර ඔබ Register වූ දුරකථන අංකය පමණක් භාවිතා කරන්න.)</label>
+            <input type="text" id="mobile" placeholder="07xxxxxxxx" maxlength="10">
+            <div id="mobileError" class="error-text">කරුණාකර අංක 10 කින් යුත් නිවැරදි අංකයක් ඇතුළත් කරන්න.</div>
+
+            <button type="button" id="verifyBtn" onclick="verifyMobile()">Verify mobile no</button>
+        </div>
+
+        <div id="additionalFields">
+            <label>Full Name</label>
+            <input type="text" id="fullName" placeholder="Enter your full name">
+
+            <label>Gmail (gmails witharak danna - english walin danna)</label>
+            <input type="email" id="gmail" placeholder="yourname@gmail.com">
+            <div id="emailError" class="error-text">කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න (example@gmail.com).</div>
+
+            <label>Nearest City</label>
+            <input type="text" id="city" placeholder="Enter your city">
+
+            <button type="button" id="submitBtn" onclick="finalSubmit()">Submit & Access Lecture Recording</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const scriptUrl = "ඔබේ_GOOGLE_SCRIPT_URL_එක_මෙතනට_දමන්න";
+
+    // Live Mobile Validation
+    document.getElementById('mobile').addEventListener('input', function(e) {
+        const val = e.target.value;
+        const error = document.getElementById('mobileError');
+        if(val.length === 10 && /^\d+$/.test(val)) {
+            error.style.display = 'none';
+        } else {
+            error.style.display = 'block';
+        }
+    });
+
+    // Live Email Validation
+    document.getElementById('gmail').addEventListener('input', function(e) {
+        const val = e.target.value;
+        const error = document.getElementById('emailError');
+        if(val.endsWith('@gmail.com') && val.length > 10) {
+            error.style.display = 'none';
+        } else {
+            error.style.display = 'block';
+        }
+    });
+
+    function verifyMobile() {
+        const mobile = document.getElementById('mobile').value;
+        const course = document.getElementById('course').value;
+
+        if(mobile.length !== 10) {
+            alert("Please enter a valid 10-digit mobile number.");
+            return;
+        }
+
+        // Backend එකට Verify කරන්න පණිවිඩයක් යැවීම
+        fetch(`${scriptUrl}?action=verify&mobile=${mobile}&course=${course}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success") {
+                // Disable Step 1
+                document.getElementById('mobile').classList.add('disabled-field');
+                document.getElementById('course').classList.add('disabled-field');
+                document.getElementById('verifyBtn').style.backgroundColor = "gray";
+                document.getElementById('verifyBtn').innerText = "Verified ✅";
+                document.getElementById('verifyBtn').disabled = true;
+
+                // Show Step 2
+                document.getElementById('additionalFields').style.display = 'block';
+                document.getElementById('submitBtn').style.display = 'block';
+            } else {
+                alert("මෙම අංකය ලියාපදිංචි වී නොමැත. කරුණාකර නිවැරදි අංකය ඇතුළත් කරන්න.");
+            }
+        })
+        .catch(err => alert("Error connecting to server."));
+    }
+
+    function finalSubmit() {
+        const btn = document.getElementById('submitBtn');
+        const gmail = document.getElementById('gmail').value;
+        
+        if(!gmail.endsWith('@gmail.com')) {
+            alert("Please enter a valid Gmail address.");
+            return;
+        }
+
+        const params = new URLSearchParams({
+            action: "submit",
+            mobile: document.getElementById('mobile').value,
+            course: document.getElementById('course').value,
+            name: document.getElementById('fullName').value,
+            email: gmail,
+            city: document.getElementById('city').value
+        });
+
+        fetch(`${scriptUrl}?${params.toString()}`)
+        .then(res => res.json())
+        .then(data => {
+            if(data.status === "success") {
+                // Done Animation
+                btn.style.backgroundColor = "green";
+                btn.innerText = "Done";
+                
+                confetti({
+                    particleCount: 150,
+                    spread: 70,
+                    origin: { y: 0.6 }
+                });
+
+                setTimeout(() => {
+                    document.getElementById('mainForm').innerHTML = `
+                        <div style="padding:40px; text-align:center;">
+                            <h2 style="color:green;">Congratulations!</h2>
+                            <p>ඔබගේ දත්ත සාර්ථකව ඇතුළත් විය. වීඩියෝව නැරඹීමට ඔබගේ Gmail සහ WhatsApp පරීක්ෂා කරන්න.</p>
+                        </div>
+                    `;
+                }, 2000);
+            }
+        });
+    }
+</script>
+
+</body>
+</html>
