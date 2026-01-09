@@ -5,176 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>London Masters Campus - Student Verification</title>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    
     <style>
-        :root {
-            --dark-blue: #001f3f;
-            --brand-red: #ff0000;
-            --white: #ffffff;
-            --gray-light: #f1f1f1;
-            --star-color: #ffcc00;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--dark-blue);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 10px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 450px;
-            background: var(--white); /* Entire form background white */
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
-        }
-
-        .banner {
-            background: var(--white);
-            padding: 25px 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-
-        .banner img {
-            height: 100px;
-            width: auto;
-        }
-
-        .banner h1 {
-            font-size: 24px;
-            margin: 0;
-            text-align: center;
-            background: linear-gradient(to right, var(--dark-blue) 20%, var(--brand-red) 50%, var(--dark-blue) 80%);
-            background-size: 200% auto;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: moveRight 3s linear infinite;
-        }
-
-        @keyframes moveRight {
-            0% { background-position: 200% center; }
-            100% { background-position: 0% center; }
-        }
-
-        .form-content {
-            padding: 25px 20px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-
-        select, input {
-            width: 100%;
-            padding: 14px;
-            margin-bottom: 20px;
-            border: 1px solid #b0bec5;
-            border-radius: 10px;
-            font-size: 16px;
-            box-sizing: border-box;
-            background: #fff;
-            outline: none;
-        }
-
-        /* Star Rating Styles */
-        .rating-label {
-            margin-bottom: 10px;
-        }
-        .stars {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 25px;
-        }
-        .stars input {
-            display: none;
-        }
-        .stars label {
-            font-size: 35px;
-            color: #ccc;
-            cursor: pointer;
-            transition: 0.2s;
-            margin: 0;
-        }
-        .stars input:checked ~ label,
-        .stars label:hover,
-        .stars label:hover ~ label {
-            color: var(--star-color);
-        }
-
-        .error-text {
-            color: red;
-            font-size: 12px;
-            margin-top: -15px;
-            margin-bottom: 15px;
-            display: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 16px;
-            border: none;
-            border-radius: 10px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.3s;
-            text-transform: uppercase;
-        }
-
-        #verifyBtn {
-            background-color: var(--brand-red);
-            color: white;
-        }
-
-        #submitBtn {
-            background-color: var(--dark-blue);
-            color: white;
-            display: none;
-        }
-
-        .disabled-field {
-            background-color: #f0f0f0 !important;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        #additionalFields {
-            display: none;
-            border-top: 1px solid #eee;
-            padding-top: 20px;
-        }
-
-        @media (max-width: 480px) {
-            .banner h1 { font-size: 20px; }
-            .banner img { height: 70px; }
-        }
+        :root { --dark-blue: #001f3f; --brand-red: #ff0000; --white: #ffffff; --star-color: #ffcc00; }
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; background-color: var(--dark-blue); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 10px; }
+        .container { width: 100%; max-width: 450px; background: var(--white); border-radius: 20px; overflow: hidden; box-shadow: 0 15px 35px rgba(0,0,0,0.4); }
+        .banner { background: var(--white); padding: 25px 15px; display: flex; flex-direction: column; align-items: center; gap: 15px; border-bottom: 2px solid #f0f0f0; }
+        .banner img { height: 80px; width: auto; }
+        .banner h1 { font-size: 24px; margin: 0; text-align: center; background: linear-gradient(to right, var(--dark-blue) 20%, var(--brand-red) 50%, var(--dark-blue) 80%); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: moveRight 3s linear infinite; }
+        @keyframes moveRight { 0% { background-position: 200% center; } 100% { background-position: 0% center; } }
+        .form-content { padding: 25px 20px; background: var(--white); }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
+        select, input { width: 100%; padding: 14px; margin-bottom: 20px; border: 1px solid #b0bec5; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
+        .stars { display: flex; flex-direction: row-reverse; justify-content: center; gap: 10px; margin-bottom: 25px; }
+        .stars input { display: none; }
+        .stars label { font-size: 35px; color: #ccc; cursor: pointer; transition: 0.2s; }
+        .stars input:checked ~ label, .stars label:hover, .stars label:hover ~ label { color: var(--star-color); }
+        .error-text { color: red; font-size: 12px; margin-top: -15px; margin-bottom: 15px; display: none; }
+        button { width: 100%; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        #verifyBtn { background-color: var(--brand-red); color: white; }
+        #submitBtn { background-color: var(--dark-blue); color: white; display: none; }
+        .disabled-field { background-color: #f0f0f0 !important; cursor: not-allowed; opacity: 0.7; }
+        #additionalFields { display: none; border-top: 1px solid #eee; padding-top: 20px; }
     </style>
 </head>
 <body>
-
 <div class="container" id="mainForm">
     <div class="banner">
         <img src="assets/logo.png" alt="Logo">
         <h1>London Masters Campus</h1>
     </div>
-
     <div class="form-content">
         <div id="step1">
             <label>Course Name</label>
@@ -182,23 +41,18 @@
                 <option value="MDRT">MDRT programm</option>
                 <option value="Bathiya">Bathiya's programm</option>
             </select>
-
             <label>Mobile Number (කරුණාකර ඔබ Register වූ දුරකථන අංකය පමණක් භාවිතා කරන්න.)</label>
-            <input type="text" id="mobile" placeholder="07xxxxxxxx" maxlength="10" inputmode="numeric">
-            <div id="mobileError" class="error-text">කරුණාකර අංක 10 කින් යුත් නිවැරදි අංකයක් ඇතුළත් කරන්න.</div>
-
+            <input type="text" id="mobile" placeholder="07xxxxxxxx" maxlength="10">
+            <div id="mobileError" class="error-text">නිවැරදි අංක 10ක් ඇතුළත් කරන්න.</div>
             <button type="button" id="verifyBtn" onclick="verifyMobile()">Verify mobile no</button>
         </div>
-
         <div id="additionalFields">
             <label>Full Name</label>
             <input type="text" id="fullName" placeholder="Enter your full name">
-
-            <label>Gmail (gmails witharak danna - english walin danna)</label>
+            <label>Gmail (gmails witharak danna)</label>
             <input type="email" id="gmail" placeholder="yourname@gmail.com">
-            <div id="emailError" class="error-text">කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න.</div>
-
-            <label class="rating-label">මම ප්‍රෝග්‍රෑම් එක පිළිබඳ ඔබේ අදහස (Rating)</label>
+            <div id="emailError" class="error-text">කරුණාකර Gmail ලිපිනයක් ඇතුළත් කරන්න.</div>
+            <label>මම ප්‍රෝග්‍රෑම් එක පිළිබඳ ඔබේ අදහස (Rating)</label>
             <div class="stars">
                 <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
                 <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
@@ -206,10 +60,8 @@
                 <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
                 <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
             </div>
-
             <label>Nearest City</label>
             <input type="text" id="city" placeholder="Enter your city">
-
             <button type="button" id="submitBtn" onclick="finalSubmit()">Submit & Access Lecture Recording</button>
         </div>
     </div>
@@ -218,47 +70,27 @@
 <script>
     const scriptUrl = "ඔබේ_GOOGLE_SCRIPT_URL_එක_මෙතනට_දමන්න";
 
-    // Mobile validation logic remains same
-    document.getElementById('mobile').addEventListener('input', function(e) {
-        const val = e.target.value;
-        const error = document.getElementById('mobileError');
-        error.style.display = (val.length === 10 && /^\d+$/.test(val)) ? 'none' : 'block';
-    });
-
-    // Gmail validation logic remains same
-    document.getElementById('gmail').addEventListener('input', function(e) {
-        const val = e.target.value;
-        const error = document.getElementById('emailError');
-        error.style.display = (val.endsWith('@gmail.com') && val.length > 10) ? 'none' : 'block';
-    });
-
     function verifyMobile() {
         const mobile = document.getElementById('mobile').value;
         const course = document.getElementById('course').value;
-
-        if(mobile.length !== 10) return alert("Please enter valid mobile.");
-
+        if(mobile.length !== 10) return alert("කරුණාකර නිවැරදි අංකය ඇතුළත් කරන්න.");
+        
         fetch(`${scriptUrl}?action=verify&mobile=${mobile}&course=${course}`)
-        .then(res => res.json())
-        .then(data => {
+        .then(res => res.json()).then(data => {
             if(data.status === "success") {
                 document.getElementById('mobile').classList.add('disabled-field');
                 document.getElementById('course').classList.add('disabled-field');
                 document.getElementById('verifyBtn').style.display = "none";
                 document.getElementById('additionalFields').style.display = 'block';
                 document.getElementById('submitBtn').style.display = 'block';
-            } else {
-                alert("අංකය ලියාපදිංචි වී නොමැත.");
-            }
+            } else { alert("ඔබ මෙම පාඨමාලාව සඳහා ලියාපදිංචි වී නොමැත."); }
         });
     }
 
     function finalSubmit() {
-        const btn = document.getElementById('submitBtn');
         const gmail = document.getElementById('gmail').value;
         const rating = document.querySelector('input[name="rating"]:checked')?.value || "0";
-        
-        if(!gmail.endsWith('@gmail.com')) return alert("Enter valid Gmail.");
+        if(!gmail.endsWith('@gmail.com')) return alert("Gmail ලිපිනයක් ඇතුළත් කරන්න.");
 
         const params = new URLSearchParams({
             action: "submit",
@@ -271,19 +103,14 @@
         });
 
         fetch(`${scriptUrl}?${params.toString()}`)
-        .then(res => res.json())
-        .then(data => {
+        .then(res => res.json()).then(data => {
             if(data.status === "success") {
-                btn.style.backgroundColor = "green";
-                btn.innerText = "Done";
                 confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
-                setTimeout(() => {
-                    document.getElementById('mainForm').innerHTML = `
-                        <div style="padding:40px; text-align:center;">
-                            <h2 style="color:green;">Congratulations!</h2>
-                            <p>දත්ත සාර්ථකව ලැබුණි. Gmail සහ WhatsApp පරීක්ෂා කරන්න.</p>
-                        </div>`;
-                }, 2000);
+                document.getElementById('mainForm').innerHTML = `
+                <div style="padding:50px; text-align:center;">
+                    <h2 style="color:green;">Done!</h2>
+                    <p>ඔබගේ දත්ත සාර්ථකව ඇතුළත් විය. Gmail සහ WhatsApp පරීක්ෂා කරන්න.</p>
+                </div>`;
             }
         });
     }
