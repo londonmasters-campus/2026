@@ -9,10 +9,10 @@
     <style>
         :root {
             --dark-blue: #001f3f;
-            --brand-red: #ff0000; /* Button Red */
-            --light-blue: #e3f2fd;
+            --brand-red: #ff0000;
             --white: #ffffff;
-            --success-green: #28a745;
+            --gray-light: #f1f1f1;
+            --star-color: #ffcc00;
         }
 
         body {
@@ -23,42 +23,43 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 10px;
         }
 
         .container {
-            width: 95%; /* Mobile Responsive */
-            max-width: 500px;
-            background: var(--white); /* Form background light blue */
-            border-radius: 15px;
+            width: 100%;
+            max-width: 450px;
+            background: var(--white); /* Entire form background white */
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin: 20px auto;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
         }
 
         .banner {
-            background: var(--white); /* Banner background white */
-            padding: 20px;
+            background: var(--white);
+            padding: 25px 15px;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 15px;
-            border-bottom: 2px solid #eee;
+            border-bottom: 2px solid #f0f0f0;
         }
 
         .banner img {
-            height: 50px;
+            height: 80px;
+            width: auto;
         }
 
-        /* Animated Heading: Left to Right */
         .banner h1 {
-            font-size: 22px;
+            font-size: 24px;
             margin: 0;
+            text-align: center;
             background: linear-gradient(to right, var(--dark-blue) 20%, var(--brand-red) 50%, var(--dark-blue) 80%);
             background-size: 200% auto;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             animation: moveRight 3s linear infinite;
-            white-space: nowrap;
         }
 
         @keyframes moveRight {
@@ -67,7 +68,7 @@
         }
 
         .form-content {
-            padding: 25px;
+            padding: 25px 20px;
         }
 
         label {
@@ -75,17 +76,46 @@
             margin-bottom: 8px;
             font-weight: 600;
             color: #333;
+            font-size: 14px;
         }
 
         select, input {
             width: 100%;
-            padding: 12px;
+            padding: 14px;
             margin-bottom: 20px;
             border: 1px solid #b0bec5;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             box-sizing: border-box;
-            background: var(--white);
+            background: #fff;
+            outline: none;
+        }
+
+        /* Star Rating Styles */
+        .rating-label {
+            margin-bottom: 10px;
+        }
+        .stars {
+            display: flex;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        .stars input {
+            display: none;
+        }
+        .stars label {
+            font-size: 35px;
+            color: #ccc;
+            cursor: pointer;
+            transition: 0.2s;
+            margin: 0;
+        }
+        .stars input:checked ~ label,
+        .stars label:hover,
+        .stars label:hover ~ label {
+            color: var(--star-color);
         }
 
         .error-text {
@@ -98,13 +128,14 @@
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
+            text-transform: uppercase;
         }
 
         #verifyBtn {
@@ -119,22 +150,20 @@
         }
 
         .disabled-field {
-            background-color: #cfd8dc !important;
+            background-color: #f0f0f0 !important;
             cursor: not-allowed;
-            pointer-events: none;
+            opacity: 0.7;
         }
 
         #additionalFields {
             display: none;
-            border-top: 1px solid #b0bec5;
+            border-top: 1px solid #eee;
             padding-top: 20px;
-            margin-top: 10px;
         }
 
-        /* Mobile Adjustments */
         @media (max-width: 480px) {
-            .banner h1 { font-size: 18px; }
-            .form-content { padding: 15px; }
+            .banner h1 { font-size: 20px; }
+            .banner img { height: 70px; }
         }
     </style>
 </head>
@@ -154,8 +183,8 @@
                 <option value="Bathiya">Bathiya's programm</option>
             </select>
 
-            <label>Mobile Number(කරුණාකර ඔබ Register වූ දුරකථන අංකය පමණක් භාවිතා කරන්න.)</label>
-            <input type="text" id="mobile" placeholder="07xxxxxxxx" maxlength="10">
+            <label>Mobile Number (කරුණාකර ඔබ Register වූ දුරකථන අංකය පමණක් භාවිතා කරන්න.)</label>
+            <input type="text" id="mobile" placeholder="07xxxxxxxx" maxlength="10" inputmode="numeric">
             <div id="mobileError" class="error-text">කරුණාකර අංක 10 කින් යුත් නිවැරදි අංකයක් ඇතුළත් කරන්න.</div>
 
             <button type="button" id="verifyBtn" onclick="verifyMobile()">Verify mobile no</button>
@@ -167,7 +196,16 @@
 
             <label>Gmail (gmails witharak danna - english walin danna)</label>
             <input type="email" id="gmail" placeholder="yourname@gmail.com">
-            <div id="emailError" class="error-text">කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න (yourname@gmail.com).</div>
+            <div id="emailError" class="error-text">කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න.</div>
+
+            <label class="rating-label">මම ප්‍රෝග්‍රෑම් එක පිළිබඳ ඔබේ අදහස (Rating)</label>
+            <div class="stars">
+                <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
+                <input type="radio" id="star4" name="rating" value="4"><label for="star4">★</label>
+                <input type="radio" id="star3" name="rating" value="3"><label for="star3">★</label>
+                <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
+                <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
+            </div>
 
             <label>Nearest City</label>
             <input type="text" id="city" placeholder="Enter your city">
@@ -180,65 +218,47 @@
 <script>
     const scriptUrl = "ඔබේ_GOOGLE_SCRIPT_URL_එක_මෙතනට_දමන්න";
 
-    // Live Mobile Validation
+    // Mobile validation logic remains same
     document.getElementById('mobile').addEventListener('input', function(e) {
         const val = e.target.value;
         const error = document.getElementById('mobileError');
-        if(val.length === 10 && /^\d+$/.test(val)) {
-            error.style.display = 'none';
-        } else {
-            error.style.display = 'block';
-        }
+        error.style.display = (val.length === 10 && /^\d+$/.test(val)) ? 'none' : 'block';
     });
 
-    // Live Email Validation
+    // Gmail validation logic remains same
     document.getElementById('gmail').addEventListener('input', function(e) {
         const val = e.target.value;
         const error = document.getElementById('emailError');
-        if(val.endsWith('@gmail.com') && val.length > 10) {
-            error.style.display = 'none';
-        } else {
-            error.style.display = 'block';
-        }
+        error.style.display = (val.endsWith('@gmail.com') && val.length > 10) ? 'none' : 'block';
     });
 
     function verifyMobile() {
         const mobile = document.getElementById('mobile').value;
         const course = document.getElementById('course').value;
 
-        if(mobile.length !== 10) {
-            alert("Please enter a valid 10-digit mobile number.");
-            return;
-        }
+        if(mobile.length !== 10) return alert("Please enter valid mobile.");
 
-        // Backend Connection
         fetch(`${scriptUrl}?action=verify&mobile=${mobile}&course=${course}`)
         .then(res => res.json())
         .then(data => {
             if(data.status === "success") {
                 document.getElementById('mobile').classList.add('disabled-field');
                 document.getElementById('course').classList.add('disabled-field');
-                document.getElementById('verifyBtn').style.backgroundColor = "gray";
-                document.getElementById('verifyBtn').innerText = "Verified ✅";
-                document.getElementById('verifyBtn').disabled = true;
-
+                document.getElementById('verifyBtn').style.display = "none";
                 document.getElementById('additionalFields').style.display = 'block';
                 document.getElementById('submitBtn').style.display = 'block';
             } else {
-                alert("මෙම අංකය ලියාපදිංචි වී නොමැත. කරුණාකර නිවැරදි අංකය ඇතුළත් කරන්න.");
+                alert("අංකය ලියාපදිංචි වී නොමැත.");
             }
-        })
-        .catch(err => alert("Error connecting to server. Make sure Script URL is correct."));
+        });
     }
 
     function finalSubmit() {
         const btn = document.getElementById('submitBtn');
         const gmail = document.getElementById('gmail').value;
+        const rating = document.querySelector('input[name="rating"]:checked')?.value || "0";
         
-        if(!gmail.endsWith('@gmail.com')) {
-            alert("Please enter a valid Gmail address.");
-            return;
-        }
+        if(!gmail.endsWith('@gmail.com')) return alert("Enter valid Gmail.");
 
         const params = new URLSearchParams({
             action: "submit",
@@ -246,6 +266,7 @@
             course: document.getElementById('course').value,
             name: document.getElementById('fullName').value,
             email: gmail,
+            rating: rating,
             city: document.getElementById('city').value
         });
 
@@ -255,25 +276,17 @@
             if(data.status === "success") {
                 btn.style.backgroundColor = "green";
                 btn.innerText = "Done";
-                
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 }
-                });
-
+                confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
                 setTimeout(() => {
                     document.getElementById('mainForm').innerHTML = `
                         <div style="padding:40px; text-align:center;">
                             <h2 style="color:green;">Congratulations!</h2>
-                            <p>ඔබගේ දත්ත සාර්ථකව ඇතුළත් විය. වීඩියෝව නැරඹීමට ඔබගේ Gmail සහ WhatsApp පරීක්ෂා කරන්න.</p>
-                        </div>
-                    `;
+                            <p>දත්ත සාර්ථකව ලැබුණි. Gmail සහ WhatsApp පරීක්ෂා කරන්න.</p>
+                        </div>`;
                 }, 2000);
             }
         });
     }
 </script>
-
 </body>
 </html>
