@@ -9,8 +9,8 @@
     <style>
         :root {
             --dark-blue: #001f3f;
-            --dark-red: #8b0000;
-            --light-gray: #f4f4f4;
+            --brand-red: #ff0000; /* Button Red */
+            --light-blue: #e3f2fd;
             --white: #ffffff;
             --success-green: #28a745;
         }
@@ -26,41 +26,48 @@
         }
 
         .container {
-            width: 100%;
+            width: 95%; /* Mobile Responsive */
             max-width: 500px;
-            background: var(--white);
+            background: var(--light-blue); /* Form background light blue */
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            margin: 20px;
+            margin: 20px auto;
         }
 
         .banner {
-            background: var(--light-gray);
+            background: var(--white); /* Banner background white */
             padding: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 15px;
+            border-bottom: 2px solid #eee;
         }
 
         .banner img {
             height: 50px;
         }
 
+        /* Animated Heading: Left to Right */
         .banner h1 {
             font-size: 22px;
             margin: 0;
-            animation: colorChange 3s infinite;
+            background: linear-gradient(to right, var(--dark-blue) 20%, var(--brand-red) 50%, var(--dark-blue) 80%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: moveRight 3s linear infinite;
+            white-space: nowrap;
         }
 
-        @keyframes colorChange {
-            0%, 100% { color: var(--dark-blue); }
-            50% { color: var(--dark-red); }
+        @keyframes moveRight {
+            0% { background-position: 200% center; }
+            100% { background-position: 0% center; }
         }
 
         .form-content {
-            padding: 30px;
+            padding: 25px;
         }
 
         label {
@@ -74,10 +81,11 @@
             width: 100%;
             padding: 12px;
             margin-bottom: 20px;
-            border: 1px solid #ccc;
+            border: 1px solid #b0bec5;
             border-radius: 8px;
             font-size: 16px;
             box-sizing: border-box;
+            background: var(--white);
         }
 
         .error-text {
@@ -100,7 +108,7 @@
         }
 
         #verifyBtn {
-            background-color: #ff0000;
+            background-color: var(--brand-red);
             color: white;
         }
 
@@ -111,16 +119,22 @@
         }
 
         .disabled-field {
-            background-color: #e9ecef !important;
+            background-color: #cfd8dc !important;
             cursor: not-allowed;
             pointer-events: none;
         }
 
         #additionalFields {
             display: none;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #b0bec5;
             padding-top: 20px;
             margin-top: 10px;
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 480px) {
+            .banner h1 { font-size: 18px; }
+            .form-content { padding: 15px; }
         }
     </style>
 </head>
@@ -153,7 +167,7 @@
 
             <label>Gmail (gmails witharak danna - english walin danna)</label>
             <input type="email" id="gmail" placeholder="yourname@gmail.com">
-            <div id="emailError" class="error-text">කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න (example@gmail.com).</div>
+            <div id="emailError" class="error-text">කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න (yourname@gmail.com).</div>
 
             <label>Nearest City</label>
             <input type="text" id="city" placeholder="Enter your city">
@@ -197,26 +211,24 @@
             return;
         }
 
-        // Backend එකට Verify කරන්න පණිවිඩයක් යැවීම
+        // Backend Connection
         fetch(`${scriptUrl}?action=verify&mobile=${mobile}&course=${course}`)
         .then(res => res.json())
         .then(data => {
             if(data.status === "success") {
-                // Disable Step 1
                 document.getElementById('mobile').classList.add('disabled-field');
                 document.getElementById('course').classList.add('disabled-field');
                 document.getElementById('verifyBtn').style.backgroundColor = "gray";
                 document.getElementById('verifyBtn').innerText = "Verified ✅";
                 document.getElementById('verifyBtn').disabled = true;
 
-                // Show Step 2
                 document.getElementById('additionalFields').style.display = 'block';
                 document.getElementById('submitBtn').style.display = 'block';
             } else {
                 alert("මෙම අංකය ලියාපදිංචි වී නොමැත. කරුණාකර නිවැරදි අංකය ඇතුළත් කරන්න.");
             }
         })
-        .catch(err => alert("Error connecting to server."));
+        .catch(err => alert("Error connecting to server. Make sure Script URL is correct."));
     }
 
     function finalSubmit() {
@@ -241,7 +253,6 @@
         .then(res => res.json())
         .then(data => {
             if(data.status === "success") {
-                // Done Animation
                 btn.style.backgroundColor = "green";
                 btn.innerText = "Done";
                 
