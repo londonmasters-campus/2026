@@ -21,11 +21,15 @@
         .stars label { font-size: 35px; color: #ccc; cursor: pointer; transition: 0.2s; }
         .stars input:checked ~ label, .stars label:hover, .stars label:hover ~ label { color: var(--star-color); }
         .error-text { color: red; font-size: 12px; margin-top: -15px; margin-bottom: 15px; display: none; }
-        button { width: 100%; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+        button { width: 100%; padding: 16px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; position: relative; }
         #verifyBtn { background-color: var(--brand-red); color: white; }
         #submitBtn { background-color: var(--dark-blue); color: white; display: none; }
-        .disabled-field { background-color: #f0f0f0 !important; cursor: not-allowed; opacity: 0.7; }
+        .disabled-field { background-color: #f0f0f0 !important; cursor: not-allowed; opacity: 0.7; pointer-events: none; }
         #additionalFields { display: none; border-top: 1px solid #eee; padding-top: 20px; }
+        
+        /* Loading Spinner Style */
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--white); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -38,20 +42,28 @@
         <div id="step1">
             <label>Course Name</label>
             <select id="course">
-                <option value="MDRT">MDRT programm</option>
-                <option value="Bathiya">Bathiya's programm</option>
+                <option value="MDRT">Breaking Barriers for MDRT 2026 - Mr. Suranjith Godagama</option>
+                <option value="Bathiya">Reset & Rebuild 2026 - Mr. Bhathiya Arthanayaka</option>
             </select>
             <label>Mobile Number (කරුණාකර ඔබ Register වූ දුරකථන අංකය පමණක් භාවිතා කරන්න.)</label>
             <input type="text" id="mobile" placeholder="07xxxxxxxx" maxlength="10">
             <div id="mobileError" class="error-text">නිවැරදි අංක 10ක් ඇතුළත් කරන්න.</div>
-            <button type="button" id="verifyBtn" onclick="verifyMobile()">Verify mobile no</button>
+            <button type="button" id="verifyBtn" onclick="verifyMobile()">
+                <span id="vBtnText">Verify mobile no</span>
+                <div id="vLoader" class="loader"></div>
+            </button>
         </div>
         <div id="additionalFields">
             <label>Full Name</label>
             <input type="text" id="fullName" placeholder="Enter your full name">
-            <label>Gmail (gmails witharak danna)</label>
+            
+            <label>Gmail (Gmail ලිපින පමණක් ඇතුළත් කරන්න)</label>
             <input type="email" id="gmail" placeholder="yourname@gmail.com">
-            <div id="emailError" class="error-text">කරුණාකර Gmail ලිපිනයක් ඇතුළත් කරන්න.</div>
+            <div id="emailError" class="error-text">කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න.</div>
+            
+            <label>Nearest City</label>
+            <input type="text" id="city" placeholder="Enter your city">
+
             <label>මම ප්‍රෝග්‍රෑම් එක පිළිබඳ ඔබේ අදහස (Rating)</label>
             <div class="stars">
                 <input type="radio" id="star5" name="rating" value="5"><label for="star5">★</label>
@@ -60,9 +72,11 @@
                 <input type="radio" id="star2" name="rating" value="2"><label for="star2">★</label>
                 <input type="radio" id="star1" name="rating" value="1"><label for="star1">★</label>
             </div>
-            <label>Nearest City</label>
-            <input type="text" id="city" placeholder="Enter your city">
-            <button type="button" id="submitBtn" onclick="finalSubmit()">Submit & Access Lecture Recording</button>
+            
+            <button type="button" id="submitBtn" onclick="finalSubmit()">
+                <span id="sBtnText">Submit & Access Lecture Recording</span>
+                <div id="sLoader" class="loader"></div>
+            </button>
         </div>
     </div>
 </div>
@@ -73,24 +87,60 @@
     function verifyMobile() {
         const mobile = document.getElementById('mobile').value;
         const course = document.getElementById('course').value;
+        const btn = document.getElementById('verifyBtn');
+        const loader = document.getElementById('vLoader');
+        const btnText = document.getElementById('vBtnText');
+
         if(mobile.length !== 10) return alert("කරුණාකර නිවැරදි අංකය ඇතුළත් කරන්න.");
+
+        // Show Loading
+        btn.disabled = true;
+        btnText.style.display = 'none';
+        loader.style.display = 'block';
         
         fetch(`${scriptUrl}?action=verify&mobile=${mobile}&course=${course}`)
         .then(res => res.json()).then(data => {
             if(data.status === "success") {
                 document.getElementById('mobile').classList.add('disabled-field');
                 document.getElementById('course').classList.add('disabled-field');
-                document.getElementById('verifyBtn').style.display = "none";
+                document.getElementById('mobile').readOnly = true;
+                btn.style.display = "none";
                 document.getElementById('additionalFields').style.display = 'block';
                 document.getElementById('submitBtn').style.display = 'block';
-            } else { alert("ඔබ මෙම පාඨමාලාව සඳහා ලියාපදිංචි වී නොමැත."); }
+            } else { 
+                alert("ඔබ මෙම පාඨමාලාව සඳහා ලියාපදිංචි වී නොමැත.");
+                btn.disabled = false;
+                btnText.style.display = 'block';
+                loader.style.display = 'none';
+            }
+        }).catch(err => {
+            alert("Error connecting. Try again.");
+            btn.disabled = false;
+            btnText.style.display = 'block';
+            loader.style.display = 'none';
         });
     }
 
     function finalSubmit() {
-        const gmail = document.getElementById('gmail').value;
+        const gmail = document.getElementById('gmail').value.trim().toLowerCase();
         const rating = document.querySelector('input[name="rating"]:checked')?.value || "0";
-        if(!gmail.endsWith('@gmail.com')) return alert("Gmail ලිපිනයක් ඇතුළත් කරන්න.");
+        const btn = document.getElementById('submitBtn');
+        const loader = document.getElementById('sLoader');
+        const btnText = document.getElementById('sBtnText');
+        const emailError = document.getElementById('emailError');
+
+        // Gmail Validation
+        if(!gmail.endsWith('@gmail.com') || gmail.length < 11) {
+            emailError.style.display = 'block';
+            return alert("කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න.");
+        } else {
+            emailError.style.display = 'none';
+        }
+
+        // Show Loading
+        btn.disabled = true;
+        btnText.style.display = 'none';
+        loader.style.display = 'block';
 
         const params = new URLSearchParams({
             action: "submit",
@@ -109,9 +159,14 @@
                 document.getElementById('mainForm').innerHTML = `
                 <div style="padding:50px; text-align:center;">
                     <h2 style="color:green;">Done!</h2>
-                    <p>ඔබගේ දත්ත සාර්ථකව ඇතුළත් විය. Gmail සහ WhatsApp පරීක්ෂා කරන්න.</p>
+                    <p>ඔබගේ දත්ත සාර්ථකව ඇතුළත් විය. ඔබගේ Gmail පරීක්ෂා කරන්න.</p>
                 </div>`;
             }
+        }).catch(err => {
+            alert("Error submitting. Try again.");
+            btn.disabled = false;
+            btnText.style.display = 'block';
+            loader.style.display = 'none';
         });
     }
 </script>
