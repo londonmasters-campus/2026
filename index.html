@@ -15,7 +15,23 @@
         @keyframes moveRight { 0% { background-position: 200% center; } 100% { background-position: 0% center; } }
         .form-content { padding: 25px 20px; background: var(--white); }
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; font-size: 14px; }
-        select, input { width: 100%; padding: 14px; margin-bottom: 20px; border: 1px solid #b0bec5; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
+        
+        /* Course Select Menu එකේ උස සහ අකුරු ලොකු කිරීම */
+        select#course { 
+            width: 100%; 
+            padding: 10px; 
+            margin-bottom: 20px; 
+            border: 1px solid #b0bec5; 
+            border-radius: 10px; 
+            font-size: 15px; 
+            box-sizing: border-box;
+            height: auto; 
+            min-height: 60px; /* පේළි දෙකකට ඉඩ ලැබෙන ලෙස උස වැඩි කිරීම */
+            white-space: normal; 
+            line-height: 1.4;
+        }
+
+        input { width: 100%; padding: 14px; margin-bottom: 20px; border: 1px solid #b0bec5; border-radius: 10px; font-size: 16px; box-sizing: border-box; }
         .stars { display: flex; flex-direction: row-reverse; justify-content: center; gap: 10px; margin-bottom: 25px; }
         .stars input { display: none; }
         .stars label { font-size: 35px; color: #ccc; cursor: pointer; transition: 0.2s; }
@@ -27,7 +43,6 @@
         .disabled-field { background-color: #f0f0f0 !important; cursor: not-allowed; opacity: 0.7; pointer-events: none; }
         #additionalFields { display: none; border-top: 1px solid #eee; padding-top: 20px; }
         
-        /* Loading Spinner Style */
         .loader { border: 3px solid #f3f3f3; border-top: 3px solid var(--white); border-radius: 50%; width: 20px; height: 20px; animation: spin 1s linear infinite; display: none; margin: 0 auto; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
@@ -93,7 +108,6 @@
 
         if(mobile.length !== 10) return alert("කරුණාකර නිවැරදි අංකය ඇතුළත් කරන්න.");
 
-        // Show Loading
         btn.disabled = true;
         btnText.style.display = 'none';
         loader.style.display = 'block';
@@ -129,7 +143,6 @@
         const btnText = document.getElementById('sBtnText');
         const emailError = document.getElementById('emailError');
 
-        // Gmail Validation
         if(!gmail.endsWith('@gmail.com') || gmail.length < 11) {
             emailError.style.display = 'block';
             return alert("කරුණාකර නිවැරදි Gmail ලිපිනයක් ඇතුළත් කරන්න.");
@@ -137,7 +150,6 @@
             emailError.style.display = 'none';
         }
 
-        // Show Loading
         btn.disabled = true;
         btnText.style.display = 'none';
         loader.style.display = 'block';
